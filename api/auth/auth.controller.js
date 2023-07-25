@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../../db/models/User");
+const User = require("../../db/models/User")
 const { JWT_SECRET, JWT_EXP } = require("../../config/keys");
 
 const hashPassword = async (password) => {
@@ -23,15 +23,10 @@ const createToken = (user) => {
 
 exports.register = async (req, res, next) => {
   try {
-    console.log(req.body.isStaff);
+    
 
     // overwrite and hash password
-    const { password, confirmPass } = req.body;
-
-    // Password validation
-    if (password !== confirmPass) {
-      return res.status(403).json({ message: "Password doesn't match" });
-    }
+    const { password } = req.body;
 
     const passwordPattern = /[a-zA-Z0-9]{8,30}/;
     const isPasswordValid = passwordPattern.test(password);
@@ -41,22 +36,21 @@ exports.register = async (req, res, next) => {
           "Password must at least 8 digits with a combination of numbers and letters.",
       });
     }
+    if (req.file) {
+      req.body.image = `${req.file.path.replace("\\", "/")}`;
+    }
+
 
     req.body.password = await hashPassword(password);
-    delete req.body.isStaff;
+    
 
     // Existing User error
-    const existingEmail = await User.findOne({ email: req.body.email });
-    if (existingEmail) {
-      return res.status(403).json({ message: "Email already exists" });
+    const existingEmailOrUsername = await User.findOne({ email: req.body.email, username:req.body.username });
+    if (existingEmailOrUsername) {
+      return res.status(403).json({ message: "Email or username already exists" });
     }
 
-    const existingUsername = await User.findOne({
-      username: req.body.username,
-    });
-    if (existingUsername) {
-      return res.status(403).json({ message: "Username already exists" });
-    }
+ 
 
     // Create User
     const newUser = await User.create(req.body);

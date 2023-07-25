@@ -1,6 +1,6 @@
 const { model, Schema } = require("mongoose");
 
-const authSchema = new Schema(
+const AuthSchema = new Schema(
   {
     username: {
       type: String,
@@ -9,8 +9,12 @@ const authSchema = new Schema(
     },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    image: { type: String, required: true },
+    bio: {type: String },
+    trips: { type: Schema.Types.ObjectId, ref: "Trip"}
+
   },
   { timestamps: true }
 );
 
-module.exports = model("Auth", authSchema);
+module.exports = model("Auth", AuthSchema);
