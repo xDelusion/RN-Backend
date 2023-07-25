@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../../db/models/User")
+const User = require("../../db/models/User");
 const { JWT_SECRET, JWT_EXP } = require("../../config/keys");
 
 const hashPassword = async (password) => {
@@ -23,8 +23,6 @@ const createToken = (user) => {
 
 exports.register = async (req, res, next) => {
   try {
-    
-
     // overwrite and hash password
     const { password } = req.body;
 
@@ -36,21 +34,23 @@ exports.register = async (req, res, next) => {
           "Password must at least 8 digits with a combination of numbers and letters.",
       });
     }
+
     if (req.file) {
       req.body.image = `${req.file.path.replace("\\", "/")}`;
     }
 
-
     req.body.password = await hashPassword(password);
-    
 
     // Existing User error
-    const existingEmailOrUsername = await User.findOne({ email: req.body.email, username:req.body.username });
+    const existingEmailOrUsername = await User.findOne({
+      email: req.body.email,
+      username: req.body.username,
+    });
     if (existingEmailOrUsername) {
-      return res.status(403).json({ message: "Email or username already exists" });
+      return res
+        .status(403)
+        .json({ message: "Email or username already exists" });
     }
-
- 
 
     // Create User
     const newUser = await User.create(req.body);
