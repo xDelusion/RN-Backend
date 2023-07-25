@@ -39,10 +39,8 @@ router.put(
   updateTrip
 );
 
-router.delete(
-  "/delete/:tripId",
-  passport.authenticate("jwt", { session: false }),
-  deleteTrip
-);
+// //router.delete(
+// "/delete/:tripId", passport.authenticate("jwt", { session: false }), deleteTrip;
+// );
 
 module.exports = router;
