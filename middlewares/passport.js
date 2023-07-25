@@ -6,10 +6,10 @@ const JWTStrategy = require("passport-jwt").Strategy;
 const { fromAuthHeaderAsBearerToken } = require("passport-jwt").ExtractJwt;
 
 exports.localStrategy = new LocalStrategy(
-  { usernameField: "email" },
-  async (email, password, done) => {
+  { usernameField: "username" },
+  async (username, password, done) => {
     try {
-      const foundUser = await User.findOne({ email: email });
+      const foundUser = await User.findOne({ username: username });
       if (!foundUser) {
         return done({ message: "Wrong Email or Password" }, false);
       }
