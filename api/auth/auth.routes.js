@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { register, login } = require("./auth.controller");
+const { register, login } = require("./auth.controllers");
 const passport = require("passport");
 const uploader = require("../../middlewares/uploader");
 
