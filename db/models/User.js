@@ -9,9 +9,9 @@ const AuthSchema = new Schema(
     },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    profileImage: { type: String, required: true },
+    profileImage: { type: String, required: false },
     bio: { type: String },
-    trips: { type: Schema.Types.ObjectId, ref: "Trip" },
+    trips: [{ type: Schema.Types.ObjectId, ref: "Trip" }],
   },
   { timestamps: true }
 );

@@ -25,7 +25,12 @@ exports.addTrip = async (req, res, next) => {
     if (req.file) {
       req.body.image = `${req.file.path.replace("\\", "/")}`;
     }
+    console.log(req.body);
     const trip = await Trip.create(req.body);
+
+    await req.user.updateOne({
+      $push: { trips: trip._id },
+    });
     res.status(201).json(trip);
     next(error);
   } catch (error) {

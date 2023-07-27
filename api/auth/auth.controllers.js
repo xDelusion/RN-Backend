@@ -69,3 +69,14 @@ exports.login = (req, res, next) => {
   const token = createToken(req.user);
   return res.status(200).json({ token });
 };
+
+exports.getMe = async (req, res, next) => {
+  try {
+    const me = await User.findById(req.user._id)
+      .populate("trips")
+      .select("-password");
+    return res.status(200).json(me);
+  } catch (error) {
+    next(error);
+  }
+};
