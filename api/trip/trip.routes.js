@@ -12,7 +12,7 @@ const {
 
 router.param("tripId", async (req, res, next, tripId) => {
   try {
-    const trip = await fetchTrip.findById(tripId);
+    const trip = await fetchTrip(tripId, next);
     if (!trip)
       return res.status(404).json({
         msg: "There is no trip with this id",
@@ -39,8 +39,10 @@ router.put(
   updateTrip
 );
 
-// //router.delete(
-// "/delete/:tripId", passport.authenticate("jwt", { session: false }), deleteTrip;
-// );
+router.delete(
+  "/delete/:tripId",
+  passport.authenticate("jwt", { session: false }),
+  deleteTrip
+);
 
 module.exports = router;
