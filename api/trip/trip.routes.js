@@ -6,8 +6,9 @@ const {
   fetchTrip,
   addTrip,
   getTrips,
-  updateTrip,
+  upadateTrip,
   deleteTrip,
+  getTripById,
 } = require("./trip.controllers");
 
 router.param("tripId", async (req, res, next, tripId) => {
@@ -32,17 +33,24 @@ router.post(
 );
 
 router.get("/", getTrips);
+
 router.put(
   "/:tripId",
+  upload.single("tripImage"),
   passport.authenticate("jwt", { session: false }),
-  upload.single("image"),
-  updateTrip
+  upadateTrip
 );
 
 router.delete(
   "/delete/:tripId",
   passport.authenticate("jwt", { session: false }),
   deleteTrip
+);
+
+router.get(
+  "/:tripId",
+  // passport.authenticate("jwt", { session: false }),
+  getTripById
 );
 
 module.exports = router;

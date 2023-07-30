@@ -38,12 +38,27 @@ exports.addTrip = async (req, res, next) => {
   }
 };
 
-exports.updateTrip = async (req, res, next) => {
+exports.upadateTrip = async (req, res, next) => {
   try {
-    await req.trip.updateOne(req.trip);
-    return res.status(204).end();
+    const { tripId } = req.params;
+    if (req.file) {
+      req.body.tripimage = `${req.file.path}`;
+    }
+
+    const trip = await Trip.findById(tripId);
+    if (!trip) {
+      res.status(404).json({ message: "trip not found" });
+    } else {
+      if (req.user._id.equals(trip.creator)) {
+        await trip.updateOne(req.body);
+        return res.status(200).json({ message: "trip updated successfully" });
+      }
+      return res
+        .status(401)
+        .json({ message: "you are not the creater of the trip" });
+    }
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
 
@@ -63,6 +78,15 @@ exports.deleteTrip = async (req, res, next) => {
   }
 };
 
+exports.getTripById = async (req, res, next) => {
+  try {
+    const { tripId } = req.params;
+    const trip = await Trip.findById(tripId).populate("creator");
+    res.status(200).json(trip);
+  } catch (error) {
+    next(error);
+  }
+};
 // exports.deleteTrip = async (req, res, next) => {
 //   try {
 //     if (!req.user.username) {
